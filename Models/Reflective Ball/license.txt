@@ -1,0 +1,11 @@
+Model Information:
+* title:	Reflective ball
+* source:	https://sketchfab.com/3d-models/reflective-ball-4085407d6da54335b325d76e20ec8c48
+* author:	Bunty Somaiya (https://sketchfab.com/BuntySomaiya)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Reflective ball" (https://sketchfab.com/3d-models/reflective-ball-4085407d6da54335b325d76e20ec8c48) by Bunty Somaiya (https://sketchfab.com/BuntySomaiya) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
