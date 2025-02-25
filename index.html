@@ -1,271 +1,79 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
- 
+<html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Portal</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
- <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-0000000');</script>
-<!-- End Google Tag Manager -->
- 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
- <script async src="https://www.googletagmanager.com/gtag/js?id='UA-000000000-0"></script>
- <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Prevent scrollbars */
+    }
 
-  gtag('config', 'UA-000000000-0');
- </script>
- 
- </head>
- <!-- Loads <model-viewer> for modern browsers: -->
- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"></script>
-  
- <script nomodule="" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
- <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-  <!-- The following libraries and polyfills are recommended to maximize browser support -->  
-  <!-- REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
-  <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    model-viewer {
+      width: 100%;
+      height: 100%;
+    }
 
-  <!-- OPTIONAL: Intersection Observer polyfill for better performance in Safari and IE11 -->
-  <script src="https://unpkg.com/intersection-observer/intersection-observer.js"></script>
+    #ar-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1; /* Ensure button is on top */
+    }
 
-  <!-- OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
-  <script src="https://unpkg.com/resize-observer-polyfill/dist/ResizeObserver.js"></script>
- 
- <script>
-      function Sync(selector, audioSelector) {
-        var modelViewer = document.querySelector(selector);
-        var sound = document.querySelector(audioSelector);
-        var playRequest = document.querySelector("#overlay");
-
-   sound.addEventListener("timeupdate", () => {
-          modelViewer.currentTime = sound.currentTime;
-          console.log("modelViewer time: " + modelViewer.currentTime);
-        });
-
-   sound.addEventListener("pause", () => {
-          modelViewer.pause();
-        });
-
-   sound.addEventListener("play", () => {
-          modelViewer.play();
-
-   playRequest.classList.add("hide");
-        });
-
-   document.addEventListener("visibilitychange", () => {
-          if (document.visibilityState !== "visible") {
-            sound.pause();
-          }
-        });
-var promise = sound.play();
-        if (promise !== undefined) {
-          promise
-            .then(_ => {
-              console.log("Autoplay has worked");
-              playRequest.classList.add("hide");
-            })
-            .catch(error => {
-              // Show a "Play" button so that user can start playback.
-              console.log("Autoplay has not worked");
-
-   // show the modal dialogue to play this
-   playRequest.classList.remove("hide");
-            });
-        }
-
-   }  
-      function playNow() {
-        var playRequest = document.querySelector("#overlay");
-        playRequest.classList.add("hide");
-
-   var sound = document.querySelector("#sound");
-        sound.play();
-      }
-
-   function jumpTo(time) {
-        var sound = document.querySelector("#sound");
-        sound.currentTime = time;
-      }
-   </script>
- 
-<script>
-/**
-* Function that registers a click on an outbound link in Analytics.
-* This function takes a valid URL string as an argument, and uses that URL string
-* as the event label. Setting the transport method to 'beacon' lets the hit be sent
-* using 'navigator.sendBeacon' in browser that support it.
-*/
-var getOutboundLink = function(url) {
-  gtag('event', 'click', {
-    'event_category': 'outbound',
-    'event_label': url,
-    'transport_type': 'beacon',
-    'event_callback': function(){document.location = url;}
-  });
-}
-</script>
-
-<style> 
- 
-.container {
- column-count: 1;
- column-width: 500px;
- column-gap: 10px;
-}
-  .card {
-  break-inside: avoid;
-  background-color: rgb(255, 255, 255);
-  border: 2px solid rgb(255, 255, 255);
-  padding: 10px;
-  margin: 0 0 1em 0;
-}
- .card1 {
-  break-inside: avoid;
-  background-color: #FFFFFF;
-  border: 2px solid rgb(255, 255, 255);
-  padding: 5px;
-  margin: 0 0 1em 0;
-}
-}
-  .stack-top{
-   z-index: 9;
-}
- .marginauto {
-    margin: 10px auto 10px;
-    display: block;
-}
- .centerImage
-{
- text-align:center;
- display:block;
-}
-
-a {
-        color: #4D008C;
-      }
- 
- </style>
-
-<body bgcolor= #FFFFFF>
- 
+    #ar-button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  </style>
+</head>
 <body>
 
-<!--<h1>The column-count Property</h1> -->
-<!--<p>The column-count property defines the number of columns an element is divided into:</p> -->
+<model-viewer 
+  src=="Models/scene.glb"  
+  ar 
+  ar-scale="auto"
+  camera-controls 
+  auto-rotate 
+  interaction-prompt="none"
+  xr-environment="images/WebPortal Skybox1024.hdr"  
+>
+  <button id="ar-button" slot="ar-button">Start AR</button>
+</model-viewer>
 
- <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-0000000"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
- 
- <div class="container">
- <div class="card">
-      <img class="marginauto" src="images/Company Here.jpg" alt="Logo" style="max-width: 100%; max-height: 100%"> 
-      <h2 style="text-align: center;" markdown="1"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro"> COMING SOON</p></h2></b>
-      <h2 style="text-align: center;" markdown="1"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro"> Details to Follow</p></h2></b>
-      <h3 style="text-align: center;" markdown="1"><b style="color:#f93822;"><p style="font-family:Avenir Next LT Pro"> WALK ROOFTOP POOL, PRESS AR BUTTON ON MOBILE!</p></h3></b>
-     </div>
-     
- <div class="card"> 
- <div class="centerImage">    
-  <model-viewer id="model-viewer" loading="eager" src="Models/part2_ver_3.glb?sound=Sound/Pool party sound_ver3_15sec.mp3" camera-controls 
-                   camera-orbit="0deg 45deg 45%" autoplay animation-name="" id="interaction" id="reveal" exposure="1" shadow-intensity="1" ar ar-modes="scene-viewer 
-                   webxr quick-look" ios-src="Models/Part_2_ver_3.usdz" alt="NOHO WEST" auto-rotate-delay="0" ar-scale="auto"
-                   slot= "progress-bar" style="z-index: 1; width: 100%; height: 800px; position: static; ">
-  
-                    <button slot="ar-button" 
-                   style="z-index: 9; background-color: #EABEB0; border-radius: 8px; border: 1 px solid white; position: absolute; top: 2px; right: 0; height: 40px; width: auto; ">
+<script>
+  const modelViewer = document.querySelector('model-viewer');
+  const arButton = document.getElementById('ar-button');
 
-                     👆 <b style="color:#FFFFFF;"><strong>JOIN ROOFTOP PARTY IN AR</strong></b></button>   
-     
-           
-     <div class="card1">
-      <!--<model-viewer camera-controls camera-orbit="160deg 90deg 15m" touch-action="pan-y" skybox-image="images/WebPortal Skybox2_13k.jpg" 
-      loading="eager" src="Models/zefiro.glb?sound=Sound/NOHO West Rooftop Pool Audio2.mp3" autoplay camera-target="10cm -10cm 10cm" 
-      id="model-viewer" id="reveal" exposure="1" shadow-intensity="1" ar ar-modes="webxr scene-viewer quick-look" 
-      ios-src="Models/ZEFIRO.usdz" alt="Web Portal Test 2" auto-rotate ar-scale="auto" interaction-prompt="none" 
-                    slot= "progress-bar" style="z-index: 1; width: 100%; height: 800px; position: static; "> -->
-                    
-      <!--environment-image="images/WebPortal Skybox1024.hdr" alt="Web Portal Test" loading="eager" src="Models/scene.glb" id="model-viewer" 
-          id="reveal" exposure="1" shadow-intensity="1" ar-modes="webxr scene-viewer quick-look" ios-src="Models/usdz_scene___1677874733824.usdz"
-          alt="NOHO WEST" auto-rotate-delay="0" ar-scale="auto" slot= "progress-bar" style="z-index: 1; width: 100%; height: 800px; position: static; "> -->
-   
-      <model-viewer camera-controls camera-orbit="0deg 82deg 0deg" touch-action="pan-y" skybox-image="images/WebPortal Skybox13k.jpg" 
-                  environment-image="images/WebPortal Skybox1024.hdr" alt="Web Portal Test" loading="eager" src="Models/scene.glb" camera-target="0m 0m -400m" 
-                   id="model-viewer" id="reveal" exposure="1" shadow-intensity="1" ar-modes="webxr scene-viewer quick-look" 
-                   ios-src="Models/usdz_scene___1677874733824.usdz" alt="NOHO WEST" auto-rotate-delay="0" ar-scale="auto"
-                    slot= "progress-bar" style="z-index: 1; width: 100%; height: 800px; position: static; ">
-      
-     </model-viewer>
-     </div>   
-     </model-viewer>
-        </div>
-   
-     <section class="attribution">
-        <div>
-          <span>
-            <h1 style="text-align: center;" markdown="1"><b style="color:#000000;"><p style="font-family:Avenir Next LT Pro">Live Pool Party</b></p></h1>
-              <p align="center">
-              <span>
-              <audio controls autoplay loop id="sound">
-                <source src="Sound/Pool party sound_ver3_15sec.mp3"/>
-              </audio
-            ></span> 
-             </p>
-            </span>
-         </div>
-   </section>
-   <script>    
-        window.addEventListener("load", () => {
-          Sync("#model-viewer", "#sound");
-        });
-      </script>
-   <div class="centerImage">   
-   <button onclick="location.href='https://avertek.github.io/NOHO-West-Rooftop/'" type="button" slot="" 
-                    style="z-index: 9; background-color: #4D008C; border-radius: 8px; border: 1 px solid white; position: static; height: 50px; width: auto;
-                          color:#FFFFFF; font-family:Avenir Next LT Pro"><strong>ROOFTOP POOL IN 3D</strong>
-       </button> 
-         </div>
-         <br><br>
- 
-  <div class="card">
-     <h2 style="text-align: center;" markdown="1"><p style="font-family:Avenir Next LT Pro"><a href="https://alexannohowest.com/amenities/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink('https://alexannohowest.com/amenities/?utm_source=AVERtek&utm_medium=AR');return false;"><b style="color:#4D008C;"><b> BREADCRUMB ONE</b></b></h2></a></p></a></h2>
-     <h2 style="text-align: center;" markdown="1"><p style="font-family:Avenir Next LT Pro"><a href="https://alexannohowest.com/gallery/videos/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink('https://alexannohowest.com/gallery/videos/?utm_source=AVERtek&utm_medium=AR');return false;"><b style="color:#4D008C;"><b> BREADCRUMB TWO</b></b></h2></a></p></a></h2>
-     <h2 style="text-align: center;" markdown="1"><p style="font-family:Avenir Next LT Pro"><a href="https://alexannohowest.com/floor-plans/map/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink('https://alexannohowest.com/floor-plans/map/?utm_source=AVERtek&utm_medium=AR'); return false;"><b style="color:#4D008C;"><b> BREADCRUMB THREE</b></h2></a></p></a>
-     <h2 style="text-align: center;" markdown="1"><p style="font-family:Avenir Next LT Pro"><a href="https://alexannohowest.securecafe.com/onlineleasing/alexan-noho-west/guestlogin.aspx?propleadsource_1413402=portal" onclick="getOutboundLink('https://alexannohowest.securecafe.com/onlineleasing/alexan-noho-west/guestlogin.aspx?propleadsource_1413402=portal'); return false;"><b style="color:#4D008C;"><b> CONTACT US</b></h2></a></p></a>  
-   <br>
-     <h2 style="text-align: center;" markdown="1"><p style="font-family:Avenir Next LT Pro"><a href="tel:+18005551234"><b style="color:#4D008C;">800-555-1234</a></b></b></p></h2>
-     <h2 style="text-align: center;" markdown="1"><b style="color:#000000;"><p style="font-family:Avenir Next LT Pro"> 12345 W. Any St., City, CA 00000 </p></h2></b>
-   </div>
-   
-   <div class="card">
-    <h2 style="text-align: center;" markdown="1"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro">4D Augmented Reality on Mobile Device!</p></h2></b>
-    <!--<img class="marginauto" src="images/AR Instructions NW.png" style="max-width: 100%; height: 200px">-->
-    <img class="marginauto" src="images/AR Instructions NW.png" style="max-width: 100%; height: 350px"> 
-    <h2 style="text-align: center;" markdown="1"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro">Share with Family & Friends!</p></h2></b>
-    </style>  
-   </div>
+  modelViewer.addEventListener('load', () => {
+    arButton.disabled = !modelViewer.canActivateAR;
+  });
 
-    <div class="card">
-    
-    </div>
-    <br>
-     <h4 style="text-align: center;" markdown="1"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro"><em> if AR button does not appear on mobile device, use another browser</em></p></h4></b>
-     
-     <h3 style="text-align: center;" markdown="1"><a href="https://avertek.net/" onclick="getOutboundLink('https://avertek.net/');
-       return false;"><b style="color:#4D008C;"><p style="font-family:Avenir Next LT Pro">Learn More About AVERtek's XR-NOW</p></a></h3></b>
-    </div>
+  arButton.addEventListener('click', () => {
+    modelViewer.activateAR();
+  });
 
+  // Optional: Listen for AR session ending
+  modelViewer.addEventListener('ar-session-end', () => {
+    console.log("AR session ended.");
+    // You can add code here to reset your scene or perform other actions.
+  });
 
-</div>
+</script>
+
 </body>
 </html>
