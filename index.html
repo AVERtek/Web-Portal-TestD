@@ -31,21 +31,15 @@
   <script>
     const modelViewer = document.querySelector('model-viewer');
     const arButton = document.getElementById('ar-button');
-
     modelViewer.addEventListener('load', () => {
       console.log("Model loaded successfully!");
+      console.log("AR Available:", modelViewer.canActivateAR); // Crucial check!
       arButton.disabled = !modelViewer.canActivateAR;
-      console.log("AR Available:", modelViewer.canActivateAR);
     });
-
     modelViewer.addEventListener('error', (error) => {
       console.error("Model loading error:", error);
-      alert("Error loading model. Check the console!");
     });
-
-    arButton.addEventListener('click', () => {
-      modelViewer.activateAR();
-    });
+    arButton.addEventListener('click', () => { modelViewer.activateAR(); });
   </script>
 </body>
 </html>
